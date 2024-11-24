@@ -3,7 +3,7 @@ body {
   font-family: Arial, sans-serif;
   text-align: center;
   margin: 0;
-  padding: 20px;
+  padding: 10px;
 }
 
 .container {
@@ -16,6 +16,8 @@ body {
   border: 1px solid #ccc;
   margin-top: 20px;
   cursor: crosshair;
+  max-width: 100%;
+  height: auto;
 }
 
 #save-button {

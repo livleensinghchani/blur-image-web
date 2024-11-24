@@ -5,7 +5,7 @@ const ctx = canvas.getContext("2d");
 const saveButton = document.getElementById("save-button");
 
 let image = new Image();
-let isDragging = false;
+let isTouching = false;
 
 // Load image to canvas
 fileInput.addEventListener("change", (event) => {
@@ -21,21 +21,34 @@ fileInput.addEventListener("change", (event) => {
 
 // Draw the image onto the canvas
 image.onload = () => {
-  canvas.width = image.width;
-  canvas.height = image.height;
-  ctx.drawImage(image, 0, 0);
+  const screenWidth = window.innerWidth * 0.9; // Responsive width
+  const aspectRatio = image.height / image.width;
+
+  canvas.width = screenWidth;
+  canvas.height = screenWidth * aspectRatio;
+  ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
 };
 
-// Add blur effect on drag
-canvas.addEventListener("mousedown", () => (isDragging = true));
-canvas.addEventListener("mouseup", () => (isDragging = false));
-canvas.addEventListener("mousemove", (e) => {
-  if (isDragging) {
-    const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+// Add blur effect on touch
+canvas.addEventListener("touchstart", (e) => {
+  e.preventDefault();
+  isTouching = true;
+});
 
-    // Apply blur effect at the cursor position
+canvas.addEventListener("touchend", (e) => {
+  e.preventDefault();
+  isTouching = false;
+});
+
+canvas.addEventListener("touchmove", (e) => {
+  e.preventDefault();
+  if (isTouching) {
+    const rect = canvas.getBoundingClientRect();
+    const touch = e.touches[0];
+    const x = touch.clientX - rect.left;
+    const y = touch.clientY - rect.top;
+
+    // Apply blur effect at the touch position
     ctx.filter = "blur(10px)";
     ctx.drawImage(canvas, x - 15, y - 15, 30, 30, x - 15, y - 15, 30, 30);
     ctx.filter = "none"; // Reset filter
